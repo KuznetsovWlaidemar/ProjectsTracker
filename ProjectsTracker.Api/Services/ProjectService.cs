@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ProjectsTracker.Domain.Employees;
 using ProjectsTracker.Domain.Projects;
 
 namespace ProjectsTracker.Services
@@ -10,6 +11,7 @@ namespace ProjectsTracker.Services
         ProjectDto CreateProject(ProjectDto project);
         ProjectDto UpdateProject(int id, ProjectDto updatedProject);
         int DeleteProject(int id);
+        int DeleteEmployeeFromProject(int employeeId, int projectId);
 
     }
 
@@ -130,6 +132,24 @@ namespace ProjectsTracker.Services
             _dbContext.Projects.Remove(project);
             _dbContext.SaveChanges();
             return 0;
+        }
+
+        public int DeleteEmployeeFromProject(int employeeId, int projectId)
+        {
+            try
+            {
+                var project = _dbContext.Projects.Where(w => w.Employees.Any(f => f.Id == employeeId) && w.Id == projectId).FirstOrDefault();
+                
+                project.Employees.Remove(new Employee { Id = employeeId });
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок, например, запись в лог или возврат специального значения
+                Console.WriteLine("Произошла ошибка при удалении сотрудника из проекта: " + ex.Message);
+                return 1;
+            }
         }
         #endregion
 

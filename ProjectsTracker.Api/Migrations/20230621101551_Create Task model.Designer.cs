@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectsTracker;
 
@@ -11,9 +12,11 @@ using ProjectsTracker;
 namespace ProjectsTracker.Migrations
 {
     [DbContext(typeof(DbContext))]
-    partial class DbContextModelSnapshot : ModelSnapshot
+    [Migration("20230621101551_Create Task model")]
+    partial class CreateTaskmodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,41 +70,6 @@ namespace ProjectsTracker.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("ProjectsTracker.Domain.Problems.Problem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AssigneeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Priority")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TaskName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssigneeId");
-
-                    b.HasIndex("AuthorId");
-
-                    b.ToTable("Problems");
-                });
-
             modelBuilder.Entity("ProjectsTracker.Domain.Projects.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -149,6 +117,41 @@ namespace ProjectsTracker.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("ProjectsTracker.Domain.Tasks.Task", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AssigneeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TaskName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssigneeId");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("Tasks");
+                });
+
             modelBuilder.Entity("EmployeeProject", b =>
                 {
                     b.HasOne("ProjectsTracker.Domain.Employees.Employee", null)
@@ -173,7 +176,7 @@ namespace ProjectsTracker.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("ProjectsTracker.Domain.Problems.Problem", b =>
+            modelBuilder.Entity("ProjectsTracker.Domain.Tasks.Task", b =>
                 {
                     b.HasOne("ProjectsTracker.Domain.Employees.Employee", "Assignee")
                         .WithMany()

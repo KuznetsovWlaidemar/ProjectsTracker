@@ -8,7 +8,7 @@ namespace ProjectsTracker.Api
     {
         public AppMappingProfile()
         {
-            CreateMap<Project, ProjectsDto>().ReverseMap();
+            CreateMap<Project, ProjectDto>().ReverseMap();
             CreateMap<Employee, EmployeeDto>().ReverseMap();
         }
     }

@@ -100,6 +100,23 @@ namespace ProjectsTracker.Api.Controllers
                 return StatusCode(500, "Произошла ошибка при удалении проекта." + ex.Message);
             }
         }
+
+        // DELETE: api/projects/{id}
+        //[HttpDelete("{id}")]
+        //public IActionResult DeleteEmployeeFromProject(int employeeId, int projectId)
+        //{
+        //    try
+        //    {
+        //        _projectService.DeleteEmployeeFromProject(employeeId, projectId);
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
+        //        return StatusCode(500, "Произошла ошибка при удалении проекта." + ex.Message);
+        //    }
+        //}
+
         #endregion
     }
 }

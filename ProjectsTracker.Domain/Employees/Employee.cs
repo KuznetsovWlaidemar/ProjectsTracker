@@ -33,14 +33,14 @@ namespace ProjectsTracker.Domain.Employees
         /// </summary>
         public string Email { get; set; }
 
+        #endregion
+
+        #region Relationships
         /// <summary>
         /// Роль сотрудника на проекте
         /// </summary>
         public Role Role { get; set; }
 
-        #endregion
-
-        #region Relationships
         /// <summary>
         /// Проекты сотрудника
         /// </summary>
