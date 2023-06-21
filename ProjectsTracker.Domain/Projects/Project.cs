@@ -1,4 +1,6 @@
-﻿namespace ProjectsTracker.Domain
+﻿using ProjectsTracker.Domain.Employees;
+
+namespace ProjectsTracker.Domain.Projects
 {
     /// <summary>
     /// Проект

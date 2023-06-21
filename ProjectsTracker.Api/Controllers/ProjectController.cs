@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ProjectsTracker.Domain;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using ProjectsTracker.Domain.Employees;
 using ProjectsTracker.Services;
 
 namespace ProjectsTracker.Api.Controllers
@@ -10,12 +11,15 @@ namespace ProjectsTracker.Api.Controllers
     {
         #region Fields
         private readonly IProjectService _projectService;
+        private readonly IMapper _mapper;
         #endregion
 
         #region Constructors
-        public ProjectController(IProjectService projectService)
+        public ProjectController(IProjectService projectService,
+                                 IMapper mapper)
         {
             _projectService = projectService;
+            _mapper = mapper;
         }
         #endregion
 

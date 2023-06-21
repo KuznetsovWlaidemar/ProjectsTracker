@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectsTracker.Domain;
+using ProjectsTracker.Domain.Employees;
+using ProjectsTracker.Domain.Projects;
 
 namespace ProjectsTracker
 {
@@ -10,7 +12,7 @@ namespace ProjectsTracker
         private readonly IConfiguration _configuration;
 
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Employee> Projects { get; set; }
+        public DbSet<Project> Projects { get; set; }
         public DbSet<Role> Roles { get; set; }
 
         #endregion

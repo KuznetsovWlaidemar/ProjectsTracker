@@ -1,9 +1,11 @@
-﻿namespace ProjectsTracker.Domain
+﻿using ProjectsTracker.Domain.Projects;
+
+namespace ProjectsTracker.Domain.Employees
 {
     /// <summary>
-    /// Сотрудник
+    /// Промежуточный класс Сотрудника
     /// </summary>
-    public class Employee
+    public class EmployeeDto
     {
         #region Fields
         /// <summary>

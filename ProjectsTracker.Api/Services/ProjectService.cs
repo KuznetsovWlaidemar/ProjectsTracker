@@ -1,13 +1,14 @@
-﻿using ProjectsTracker.Domain;
+﻿using AutoMapper;
+using ProjectsTracker.Domain.Projects;
 
 namespace ProjectsTracker.Services
 {
     public interface IProjectService
     {   
-        IEnumerable<Employee>? GetProjects();
-        Employee? GetProject(int id);
-        Employee? CreateProject(Employee project);
-        Employee? UpdateProject(int id, Employee updatedProject);
+        IEnumerable<ProjectDto> GetProjects();
+        ProjectDto GetProject(int id);
+        ProjectDto CreateProject(ProjectDto project);
+        ProjectDto UpdateProject(int id, ProjectDto updatedProject);
         int DeleteProject(int id);
 
     }
@@ -16,12 +17,15 @@ namespace ProjectsTracker.Services
     {
         #region Fields
         private readonly DbContext _dbContext;
+        private readonly IMapper _mapper;
         #endregion
 
         #region Constructors
-        public ProjectService(DbContext dbContext)
+        public ProjectService(DbContext dbContext,
+                              IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
         #endregion
 
@@ -30,12 +34,13 @@ namespace ProjectsTracker.Services
         /// Извлекает все проекты
         /// </summary>
         /// <returns>Все проекты</returns>
-        public IEnumerable<Employee>? GetProjects()
+        public IEnumerable<ProjectDto> GetProjects()
         {
             try
             {
                 var projects = _dbContext.Projects.ToList();
-                return projects;
+                var projectsDto = _mapper.Map<IEnumerable<ProjectDto>>(projects);
+                return projectsDto;
             }
             catch (Exception ex)
             {
@@ -49,13 +54,13 @@ namespace ProjectsTracker.Services
         /// </summary>
         /// <param name="id">Id проекта</param>
         /// <returns>Найденный проект</returns>
-        public Employee? GetProject(int id)
+        public ProjectDto GetProject(int id)
         {
             try
             {
                 var project = _dbContext.Projects.FirstOrDefault(p => p.Id == id);
-
-                return project;
+                var projectsDto = _mapper.Map<ProjectDto>(project);
+                return projectsDto;
             }
             catch (Exception ex)
             {
@@ -69,13 +74,15 @@ namespace ProjectsTracker.Services
         /// </summary>
         /// <param name="project">Создаваемый проект</param>
         /// <returns>Созданный проект</returns>
-        public Employee? CreateProject(Employee project)
+        public ProjectDto CreateProject(ProjectDto projectDto)
         {
             try
             {
+                var project = _mapper.Map<Project>(projectDto);
+                
                 _dbContext.Projects.Add(project);
                 _dbContext.SaveChanges();
-                return project;
+                return projectDto;
             }
             catch (Exception ex)
             {
@@ -91,15 +98,16 @@ namespace ProjectsTracker.Services
         /// <param name="id">Id проекта</param>
         /// <param name="updatedProject">Данные для обновления</param>
         /// <returns></returns>
-        public Employee? UpdateProject(int id, Employee updatedProject)
+        public ProjectDto UpdateProject(int id, ProjectDto updatedProjectDto)
         {
             try
             {
                 var project = _dbContext.Projects.FirstOrDefault(p => p.Id == id);
-                project = updatedProject;
+
+                project = _mapper.Map<Project>(updatedProjectDto);
 
                 _dbContext.SaveChanges();
-                return project;
+                return updatedProjectDto;
             }
             catch (Exception ex)
             {
