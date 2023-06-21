@@ -9,7 +9,7 @@ namespace ProjectsTracker.Api.Controllers
     public class ProjectController : Controller
     {
         #region Fields
-        private readonly IProjectService? _projectService;
+        private readonly IProjectService _projectService;
         #endregion
 
         #region Constructors
@@ -32,7 +32,7 @@ namespace ProjectsTracker.Api.Controllers
             catch (Exception ex)
             {
                 // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при получении списка проектов.");
+                return StatusCode(500, "Произошла ошибка при получении списка проектов." + ex.Message);
             }
         }
         // GET: api/projects/{id}
@@ -50,7 +50,7 @@ namespace ProjectsTracker.Api.Controllers
             catch (Exception ex)
             {
                 // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при получении проекта.");
+                return StatusCode(500, "Произошла ошибка при получении проекта." + ex.Message);
             }
         }
         // POST: api/projects
@@ -65,7 +65,7 @@ namespace ProjectsTracker.Api.Controllers
             catch (Exception ex)
             {
                 // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при создании проекта.");
+                return StatusCode(500, "Произошла ошибка при создании проекта." + ex.Message);
             }
         }
         // PUT: api/projects/{id}
@@ -80,7 +80,7 @@ namespace ProjectsTracker.Api.Controllers
             catch (Exception ex)
             {
                 // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при обновлении проекта.");
+                return StatusCode(500, "Произошла ошибка при обновлении проекта." + ex.Message);
             }
         }
         // DELETE: api/projects/{id}
@@ -95,7 +95,7 @@ namespace ProjectsTracker.Api.Controllers
             catch (Exception ex)
             {
                 // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при удалении проекта.");
+                return StatusCode(500, "Произошла ошибка при удалении проекта." + ex.Message);
             }
         }
         #endregion
