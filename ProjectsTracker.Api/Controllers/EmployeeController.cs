@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using ProjectsTracker.Domain.Employees;
 using ProjectsTracker.Domain.Projects;
 using ProjectsTracker.Services;
 
@@ -7,97 +8,97 @@ namespace ProjectsTracker.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProjectController : Controller
+    public class EmployeeController : Controller
     {
         #region Fields
-        private readonly IProjectService _projectService;
+        private readonly IEmployeeService _employeeService;
         #endregion
 
         #region Constructors
-        public ProjectController(IProjectService projectService,
+        public EmployeeController(IEmployeeService employeeService,
                                  IMapper mapper)
         {
-            _projectService = projectService;
+            _employeeService = employeeService;
         }
         #endregion
 
         #region Methods
-        // GET: api/projects
+        // GET: api/employees
         [HttpGet]
-        public IActionResult GetProjects()
+        public IActionResult GetEmployees()
         {
             try
             {
-                var projects = _projectService.GetProjects();
-                return Ok(projects);
+                var employees = _employeeService.GetEmployees();
+                return Ok(employees);
             }
             catch (Exception ex)
             {
                 // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при получении списка проектов." + ex.Message);
+                return StatusCode(500, "Произошла ошибка при получении списка сотрудников." + ex.Message);
             }
         }
-        // GET: api/projects/{id}
+        // GET: api/employees/{id}
         [HttpGet("{id}")]
-        public IActionResult GetProject(int id)
+        public IActionResult GetEmployee(int id)
         {
             try
             {
-                var project = _projectService.GetProject(id);
-                if (project == null)
+                var employee = _employeeService.GetEmployee(id);
+                if (employee == null)
                     return NotFound();
 
-                return Ok(project);
+                return Ok(employee);
             }
             catch (Exception ex)
             {
                 // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при получении проекта." + ex.Message);
+                return StatusCode(500, "Произошла ошибка при получении сотрудника." + ex.Message);
             }
         }
-        // POST: api/projects
+        // POST: api/employees
         [HttpPost]
-        public IActionResult CreateProject(ProjectDto project)
+        public IActionResult CreateEmployee(EmployeeDto employee)
         {
             try
             {
-                _projectService.CreateProject(project);
-                return Ok(project);
+                _employeeService.CreateEmployee(employee);
+                return Ok(employee);
             }
             catch (Exception ex)
             {
                 // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при создании проекта." + ex.Message);
+                return StatusCode(500, "Произошла ошибка при создании сотрудника." + ex.Message);
             }
         }
-        // PUT: api/projects/{id}
+        // PUT: api/employees/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateProject(int id, ProjectDto updatedProject)
+        public IActionResult UpdateEmployee(int id, EmployeeDto updatedEmployee)
         {
             try
             {
-                var project = _projectService.UpdateProject(id, updatedProject);
-                return Ok(project);
+                var employee = _employeeService.UpdateEmployee(id, updatedEmployee);
+                return Ok(employee);
             }
             catch (Exception ex)
             {
                 // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при обновлении проекта." + ex.Message);
+                return StatusCode(500, "Произошла ошибка при обновлении сотрудника." + ex.Message);
             }
         }
-        // DELETE: api/projects/{id}
+        // DELETE: api/employees/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteProject(int id)
+        public IActionResult DeleteEmployee(int id)
         {
             try
             {
-                _projectService.DeleteProject(id);
+                _employeeService.DeleteEmployee(id);
                 return Ok();
             }
             catch (Exception ex)
             {
                 // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при удалении проекта." + ex.Message);
+                return StatusCode(500, "Произошла ошибка при удалении сотрудника." + ex.Message);
             }
         }
         #endregion
