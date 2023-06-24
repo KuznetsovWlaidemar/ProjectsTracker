@@ -37,11 +37,6 @@ namespace ProjectsTracker.Domain.Employees
 
         #region Relationships
         /// <summary>
-        /// Роль сотрудника на проекте
-        /// </summary>
-        public Role Role { get; set; }
-
-        /// <summary>
         /// Проекты сотрудника
         /// </summary>
         public ICollection<Project> Projects { get; set; }

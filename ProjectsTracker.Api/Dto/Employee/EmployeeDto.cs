@@ -1,6 +1,6 @@
 ﻿using ProjectsTracker.Domain.Projects;
 
-namespace ProjectsTracker.Domain.Employees
+namespace ProjectsTracker.Api.Dto.Employees
 {
     /// <summary>
     /// Промежуточный класс Сотрудника
@@ -32,11 +32,6 @@ namespace ProjectsTracker.Domain.Employees
         /// Почта
         /// </summary>
         public string Email { get; set; }
-
-        /// <summary>
-        /// Роль сотрудника на проекте
-        /// </summary>
-        public Role Role { get; set; }
 
         #endregion
 

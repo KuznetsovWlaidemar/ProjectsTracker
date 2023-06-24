@@ -1,16 +1,61 @@
 ﻿using AutoMapper;
+using ProblemsTracker;
 using ProjectsTracker;
+using ProjectsTracker.Domain.Employees;
 using ProjectsTracker.Domain.Problems;
+using ProjectsTracker.Domain.Projects;
 
 namespace ProblemsTracker.Api.Services
 {
     public interface IProblemService
     {
-        IEnumerable<ProblemDto> GetProblems();
-        ProblemDto GetProblem(int id);
-        ProblemDto CreateProblem(ProblemDto problem);
-        ProblemDto UpdateProblem(int id, ProblemDto updateProblemDto);
-        int DeleteProblem(int id);
+        /// <summary>
+        /// Получить все задачи
+        /// </summary>
+        /// <returns>Задачи</returns>
+        IEnumerable<Problem> GetProblems(TaskStatus? taskStatus);
+
+        /// <summary>
+        /// Получить задачу по Id
+        /// </summary>
+        /// <param name="id">Id задачи</param>
+        /// <returns>Задача</returns>
+        Problem GetProblem(int id);
+
+        /// <summary>
+        /// Создать задачу
+        /// </summary>
+        /// <param name="problem">Задача</param>
+        /// <returns>Задача</returns>
+        Problem CreateProblem(Problem problem);
+
+        /// <summary>
+        /// Изменить задачу
+        /// </summary>
+        /// <param name="id">Id задачи</param>
+        /// <param name="updatedProblem">Задача</param>
+        /// <returns>Задача</returns>
+        Problem UpdateProblem(int id, Problem updatedProblem);
+
+        /// <summary>
+        /// Удалить задачу
+        /// </summary>
+        /// <param name="problem">Задача</param>
+        void DeleteProblem(Problem problem);
+
+        /// <summary>
+        /// Добавить сотрудника на проект
+        /// </summary>
+        /// <param name="employee">Сотрудник</param>
+        /// <param name="projectId">Id проекта</param>
+        void AddEmployeeOnProject(Employee employee, int projectId);
+
+        /// <summary>
+        /// Удалить сотрудника из проекта
+        /// </summary>
+        /// <param name="employeeId">Id сотрудника</param>
+        /// <param name="projectId">Id проекта</param>
+        void DeleteEmployeeOnProject(int employeeId, int projectId);
 
     }
     public class ProblemService : IProblemService
@@ -31,106 +76,116 @@ namespace ProblemsTracker.Api.Services
 
         #region Methods
         /// <summary>
-        /// Извлекает все задачи
+        /// Получить все задачи
         /// </summary>
-        /// <returns>Все задачи</returns>
-        public IEnumerable<ProblemDto> GetProblems()
+        /// <returns>Задачи</returns>
+        public IEnumerable<Problem> GetProblems(TaskStatus? taskStatus)
         {
             try
             {
-                var problems = _dbContext.Problems.ToList();
-                var problemsDto = _mapper.Map<IEnumerable<ProblemDto>>(problems);
-                return problemsDto;
+                var problems = _dbContext.Problems.AsQueryable().ApplyStatusFilter(taskStatus).ToList();
+                return problems;
             }
-            catch (Exception ex)
+            catch
             {
-                // Обработка ошибок, например, запись в лог или возврат специального значения
-                Console.WriteLine("Произошла ошибка при извелечении задач: " + ex.Message);
-                return null;
+                throw new Exception("Произошла ошибка при извлечении задач.");
             }
         }
+
         /// <summary>
-        /// Извлекает задачу по Id
+        /// Получить задачу по Id
         /// </summary>
         /// <param name="id">Id задачи</param>
-        /// <returns>Найденная задача</returns>
-        public ProblemDto GetProblem(int id)
-        {
-            try
-            {
-                var problem = _dbContext.Problems.FirstOrDefault(p => p.Id == id);
-                var problemsDto = _mapper.Map<ProblemDto>(problem);
-                return problemsDto;
-            }
-            catch (Exception ex)
-            {
-                // Обработка ошибок, например, запись в лог или возврат специального значения
-                Console.WriteLine("Произошла ошибка при извелечении задачи: " + ex.Message);
-                return null;
-            }
-        }
-        /// <summary>
-        /// Создаёт новую задачу
-        /// </summary>
-        /// <param name="problem">Создаваемая задача</param>
-        /// <returns>Созданная задача</returns>
-        public ProblemDto CreateProblem(ProblemDto problemDto)
-        {
-            try
-            {
-                var problem = _mapper.Map<Problem>(problemDto);
-
-                _dbContext.Problems.Add(problem);
-                _dbContext.SaveChanges();
-                return problemDto;
-            }
-            catch (Exception ex)
-            {
-                // Обработка ошибок, например, запись в лог или возврат специального значения
-                Console.WriteLine("Произошла ошибка при создании задачи: " + ex.Message);
-                return null;
-            }
-
-        }
-        /// <summary>
-        /// Изменяет задачу 
-        /// </summary>
-        /// <param name="id">Id задачи</param>
-        /// <param name="updatedProblem">Данные для обновления</param>
-        /// <returns></returns>
-        public ProblemDto UpdateProblem(int id, ProblemDto updatedProblemDto)
-        {
-            try
-            {
-                var problem = _dbContext.Problems.FirstOrDefault(p => p.Id == id);
-
-                problem = _mapper.Map<Problem>(updatedProblemDto);
-
-                _dbContext.SaveChanges();
-                return updatedProblemDto;
-            }
-            catch (Exception ex)
-            {
-                // Обработка ошибок, например, запись в лог или возврат специального значения
-                Console.WriteLine("Произошла ошибка при изменении задачи: " + ex.Message);
-                return null;
-            }
-        }
-        /// <summary>
-        /// Удаляет задачу по Id
-        /// </summary>
-        /// <param name="id">Id задачи</param>
-        /// <returns>Статус код</returns>
-        public int DeleteProblem(int id)
+        /// <returns>Задача</returns>
+        public Problem GetProblem(int id)
         {
             var problem = _dbContext.Problems.FirstOrDefault(p => p.Id == id);
             if (problem == null)
-                return 1;
+            {
+                throw new Exception("Задача не найдена");
+            }
+            return problem;
+        }
 
+        /// <summary>
+        /// Создать новую задачу
+        /// </summary>
+        /// <param name="problem">Задача</param>
+        /// <returns>Задача</returns>
+        public Problem CreateProblem(Problem problem)
+        {
+            _dbContext.Problems.Add(problem);
+            _dbContext.SaveChanges();
+            return problem;
+        }
+
+        /// <summary>
+        /// Изменить задачу
+        /// </summary>
+        /// <param name="id">Id задачи</param>
+        /// <param name="updatedProblem">Задача</param>
+        /// <returns>Задача</returns>
+        public Problem UpdateProblem(int id, Problem updatedProblem)
+        {
+            try
+            {
+                var existingProblem = GetProblem(id);
+
+                _mapper.Map(updatedProblem, existingProblem);
+                _dbContext.SaveChanges();
+                return existingProblem;
+            }
+            catch
+            {
+                throw new Exception("Произошла ошибка при изменении задачи.");
+            }
+        }
+
+        /// <summary>
+        /// Удалить задачу
+        /// </summary>
+        /// <param name="problem">Задача</param>
+        public void DeleteProblem(Problem problem)
+        {
             _dbContext.Problems.Remove(problem);
             _dbContext.SaveChanges();
-            return 0;
         }
+
+        /// <summary>
+        /// Добавить сотрудника на проект
+        /// </summary>
+        /// <param name="employee">Сотрудник</param>
+        /// <param name="projectId">Id проекта</param>
+        public void AddEmployeeOnProject(Employee employee, int projectId)
+        {
+            var project = _dbContext.Projects.FirstOrDefault(f => f.Id == projectId);
+            project.Employees.Add(employee);
+        }
+
+        /// <summary>
+        /// Удалить сотрудника из проекта
+        /// </summary>
+        /// <param name="employeeId">Id сотрудника</param>
+        /// <param name="projectId">Id проекта</param>
+        public void DeleteEmployeeOnProject(int employeeId, int projectId)
+        {
+            var project = _dbContext.Projects.FirstOrDefault(f => f.Id == projectId);
+            project.Employees.Remove(new Employee { Id = employeeId });
+        }
+
+
         #endregion
+    }
+
+    public static class ProblemFilterSerivce
+    {
+        public static IQueryable<Problem> ApplyStatusFilter(this IQueryable<Problem> problems, TaskStatus? taskStatus)
+        {
+            if (taskStatus == null)
+            {
+                return problems;
+            }
+            return problems.Where(w => w.Status == taskStatus);
+        }
     }
 }

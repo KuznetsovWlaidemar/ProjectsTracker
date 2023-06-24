@@ -14,7 +14,6 @@ namespace ProjectsTracker
 
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Project> Projects { get; set; }
-        public DbSet<Role> Roles { get; set; }
         public DbSet<Problem> Problems { get; set; }
 
         #endregion
@@ -26,25 +25,16 @@ namespace ProjectsTracker
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            #region Role
-            modelBuilder.Entity<Role>()
-                .HasMany(e => e.Employees)
-                .WithOne(e => e.Role);
-            #endregion
-
-            #region Employee
+            #region Employees
             modelBuilder.Entity<Employee>()
                 .HasMany(h => h.Projects)
                 .WithMany(w => w.Employees);
             #endregion
 
-            #region Project
+            #region Projects
+            modelBuilder.Entity<Project>()
+                .HasOne(h => h.ProjectManager);
             #endregion
-
-            #region Task
-
-            #endregion
-
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

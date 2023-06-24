@@ -1,6 +1,6 @@
 ﻿using ProjectsTracker.Domain.Employees;
 
-namespace ProjectsTracker.Domain.Problems
+namespace ProjectsTracker.Api.Dto.Problems
 {
     /// <summary>
     /// Промежуточный класс Задачи

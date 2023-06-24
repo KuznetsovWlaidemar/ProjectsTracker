@@ -1,4 +1,5 @@
 ﻿using ProjectsTracker.Domain.Employees;
+using ProjectsTracker.Domain.Problems;
 
 namespace ProjectsTracker.Domain.Projects
 {
@@ -14,7 +15,7 @@ namespace ProjectsTracker.Domain.Projects
         public int Id { get; set; }
 
         /// <summary>
-        /// Название
+        /// Наименование проекта
         /// </summary>
         public string ProjectName { get; set; }
 
@@ -27,6 +28,11 @@ namespace ProjectsTracker.Domain.Projects
         /// Компания-исполнитель
         /// </summary>
         public string ExecutorCompany { get; set; }
+
+        /// <summary>
+        /// Проектный менеджер
+        /// </summary>
+        public Employee ProjectManager { get; set; }
 
         /// <summary>
         /// Дата начала проекта
@@ -49,6 +55,10 @@ namespace ProjectsTracker.Domain.Projects
         /// Сотрудники проекта
         /// </summary>
         public ICollection<Employee> Employees { get; set; }
+        /// <summary>
+        /// Задачи на проекте
+        /// </summary>
+        public ICollection<Problem> Problems { get; set; }
         #endregion
     }
 }

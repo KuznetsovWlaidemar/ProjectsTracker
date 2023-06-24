@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ProjectsTracker.Api.Dto.Employees;
+using ProjectsTracker.Api.Dto.Projects;
 using ProjectsTracker.Domain.Employees;
 using ProjectsTracker.Domain.Projects;
 

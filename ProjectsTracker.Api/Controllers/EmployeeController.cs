@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
+using EmployeesTracker.Services;
 using Microsoft.AspNetCore.Mvc;
+using ProjectsTracker.Api.Dto.Employees;
 using ProjectsTracker.Domain.Employees;
 using ProjectsTracker.Domain.Projects;
-using ProjectsTracker.Services;
 
 namespace ProjectsTracker.Api.Controllers
 {
@@ -12,6 +13,7 @@ namespace ProjectsTracker.Api.Controllers
     {
         #region Fields
         private readonly IEmployeeService _employeeService;
+        private readonly IMapper _mapper;
         #endregion
 
         #region Constructors
@@ -19,6 +21,7 @@ namespace ProjectsTracker.Api.Controllers
                                  IMapper mapper)
         {
             _employeeService = employeeService;
+            _mapper = mapper;
         }
         #endregion
 
@@ -30,14 +33,15 @@ namespace ProjectsTracker.Api.Controllers
             try
             {
                 var employees = _employeeService.GetEmployees();
-                return Ok(employees);
+                var employeesDto = _mapper.Map<EmployeeDto>(employees);
+                return Ok(employeesDto);
             }
-            catch (Exception ex)
+            catch
             {
-                // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при получении списка сотрудников." + ex.Message);
+                return StatusCode(500, "Произошла ошибка при получении списка сотрудников.");
             }
         }
+
         // GET: api/employees/{id}
         [HttpGet("{id}")]
         public IActionResult GetEmployee(int id)
@@ -48,57 +52,64 @@ namespace ProjectsTracker.Api.Controllers
                 if (employee == null)
                     return NotFound();
 
-                return Ok(employee);
+                var employeeDto = _mapper.Map<EmployeeDto>(employee);
+                return Ok(employeeDto);
             }
-            catch (Exception ex)
+            catch
             {
-                // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при получении сотрудника." + ex.Message);
+                return StatusCode(500, "Произошла ошибка при получении сотрудника.");
             }
         }
+
         // POST: api/employees
         [HttpPost]
-        public IActionResult CreateEmployee(EmployeeDto employee)
+        public IActionResult CreateEmployee(EmployeeDto employeeDto)
         {
             try
             {
-                _employeeService.CreateEmployee(employee);
-                return Ok(employee);
+                var employee = _mapper.Map<Employee>(employeeDto);
+                employeeDto = _mapper.Map<EmployeeDto>(_employeeService.CreateEmployee(employee));
+                return Ok(employeeDto);
             }
-            catch (Exception ex)
+            catch
             {
-                // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при создании сотрудника." + ex.Message);
+                return StatusCode(500, "Произошла ошибка при создании сотрудника.");
             }
         }
+
         // PUT: api/employees/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateEmployee(int id, EmployeeDto updatedEmployee)
+        public IActionResult UpdateEmployee(int id, EmployeeDto updatedEmployeeDto)
         {
             try
             {
-                var employee = _employeeService.UpdateEmployee(id, updatedEmployee);
+                var updatedEmployee = _mapper.Map<Employee>(updatedEmployeeDto);
+                var employee = _mapper.Map<EmployeeDto>(_employeeService.UpdateEmployee(id, updatedEmployee));
                 return Ok(employee);
             }
-            catch (Exception ex)
+            catch
             {
-                // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при обновлении сотрудника." + ex.Message);
+                return StatusCode(500, "Произошла ошибка при изменении сотрудника.");
             }
         }
+
         // DELETE: api/employees/{id}
         [HttpDelete("{id}")]
         public IActionResult DeleteEmployee(int id)
         {
             try
             {
-                _employeeService.DeleteEmployee(id);
+                var employee = _employeeService.GetEmployee(id);
+                if (employee == null)
+                {
+                    return NotFound();
+                }
+                _employeeService.DeleteEmployee(employee);
                 return Ok();
             }
-            catch (Exception ex)
+            catch
             {
-                // Обработка ошибки и возврат кода состояния HTTP 500 (Внутренняя ошибка сервера)
-                return StatusCode(500, "Произошла ошибка при удалении сотрудника." + ex.Message);
+                return StatusCode(500, "Произошла ошибка при удалении сотрудника.");
             }
         }
         #endregion

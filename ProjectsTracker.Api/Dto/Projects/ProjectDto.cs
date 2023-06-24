@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectsTracker.Domain.Projects
+namespace ProjectsTracker.Api.Dto.Projects
 {
     /// <summary>
     /// Промежуточный класс для проекта

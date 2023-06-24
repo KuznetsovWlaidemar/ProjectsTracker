@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using ProblemsTracker.Api.Services;
 using ProjectsTracker.Api;
 using ProjectsTracker.Services;
 
@@ -23,10 +24,12 @@ namespace ProjectsTracker
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectsTrackerDb")));
 
             //AutoMapper
-            builder.Services.AddAutoMapper(typeof(AppMappingProfile));
+            builder.Services.AddAutoMapper(typeof(Program));
 
             //Сервисы
             builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+            builder.Services.AddScoped<IProblemService, ProblemService>();
 
             var app = builder.Build();
 

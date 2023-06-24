@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectsTracker;
 
@@ -11,9 +12,11 @@ using ProjectsTracker;
 namespace ProjectsTracker.Migrations
 {
     [DbContext(typeof(DbContext))]
-    partial class DbContextModelSnapshot : ModelSnapshot
+    [Migration("20230621123108_Add Problem collection to Project class")]
+    partial class AddProblemcollectiontoProjectclass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +60,12 @@ namespace ProjectsTracker.Migrations
                     b.Property<string>("MiddleName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Employees");
                 });
@@ -122,9 +130,6 @@ namespace ProjectsTracker.Migrations
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProjectManagerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ProjectName")
                         .HasColumnType("nvarchar(max)");
 
@@ -133,9 +138,23 @@ namespace ProjectsTracker.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProjectManagerId");
-
                     b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("ProjectsTracker.Domain.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("EmployeeProject", b =>
@@ -151,6 +170,15 @@ namespace ProjectsTracker.Migrations
                         .HasForeignKey("ProjectsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectsTracker.Domain.Employees.Employee", b =>
+                {
+                    b.HasOne("ProjectsTracker.Domain.Role", "Role")
+                        .WithMany("Employees")
+                        .HasForeignKey("RoleId");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("ProjectsTracker.Domain.Problems.Problem", b =>
@@ -174,16 +202,12 @@ namespace ProjectsTracker.Migrations
 
             modelBuilder.Entity("ProjectsTracker.Domain.Projects.Project", b =>
                 {
-                    b.HasOne("ProjectsTracker.Domain.Employees.Employee", "ProjectManager")
-                        .WithMany()
-                        .HasForeignKey("ProjectManagerId");
-
-                    b.Navigation("ProjectManager");
+                    b.Navigation("Problems");
                 });
 
-            modelBuilder.Entity("ProjectsTracker.Domain.Projects.Project", b =>
+            modelBuilder.Entity("ProjectsTracker.Domain.Role", b =>
                 {
-                    b.Navigation("Problems");
+                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }
