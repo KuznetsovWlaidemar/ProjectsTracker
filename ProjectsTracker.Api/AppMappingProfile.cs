@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using ProjectsTracker.Api.Dto.Employees;
-using ProjectsTracker.Api.Dto.Projects;
-using ProjectsTracker.Domain.Employees;
-using ProjectsTracker.Domain.Projects;
+using ProjectsTracker.Api.Contracts;
+using ProjectsTracker.Api.Contracts.Employee;
+using ProjectsTracker.Api.Contracts.Problem;
+using ProjectsTracker.Api.Contracts.Project;
+using ProjectsTracker.Domain.Models;
 
 namespace ProjectsTracker.Api
 {
@@ -10,8 +11,13 @@ namespace ProjectsTracker.Api
     {
         public AppMappingProfile()
         {
-            CreateMap<Project, ProjectDto>().ReverseMap();
-            CreateMap<Employee, EmployeeDto>().ReverseMap();
+            CreateMap<Project, CreateProjectRequest>().ReverseMap();
+            CreateMap<Project, UpdateProjectRequest>().ReverseMap();
+
+            CreateMap<Employee, CreateEmployeeRequest>().ReverseMap();
+            CreateMap<Employee, UpdateEmployeeRequest>().ReverseMap();
+
+            CreateMap<Problem, CreateProblemRequest>().ReverseMap();
         }
     }
 }

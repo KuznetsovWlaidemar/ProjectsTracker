@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
-using EmployeesTracker.Services;
 using Microsoft.AspNetCore.Mvc;
-using ProjectsTracker.Api.Dto.Employees;
-using ProjectsTracker.Domain.Employees;
-using ProjectsTracker.Domain.Projects;
+using ProjectsTracker.Api.Contracts.Employee;
+using ProjectsTracker.Application.Services;
+using ProjectsTracker.Domain.Models;
 
 namespace ProjectsTracker.Api.Controllers
 {
@@ -11,107 +10,69 @@ namespace ProjectsTracker.Api.Controllers
     [Route("api/[controller]")]
     public class EmployeeController : Controller
     {
-        #region Fields
         private readonly IEmployeeService _employeeService;
         private readonly IMapper _mapper;
-        #endregion
 
-        #region Constructors
-        public EmployeeController(IEmployeeService employeeService,
-                                 IMapper mapper)
+        public EmployeeController(
+            IEmployeeService employeeService,
+            IMapper mapper)
         {
             _employeeService = employeeService;
             _mapper = mapper;
         }
-        #endregion
 
-        #region Methods
-        // GET: api/employees
         [HttpGet]
-        public IActionResult GetEmployees()
+        public async Task<IActionResult> GetEmployeesAsync()
         {
-            try
-            {
-                var employees = _employeeService.GetEmployees();
-                var employeesDto = _mapper.Map<EmployeeDto>(employees);
-                return Ok(employeesDto);
-            }
-            catch
-            {
-                return StatusCode(500, "Произошла ошибка при получении списка сотрудников.");
-            }
+            var employees = await _employeeService.GetEmployeesAsync();
+            return Ok(employees);
         }
 
-        // GET: api/employees/{id}
         [HttpGet("{id}")]
-        public IActionResult GetEmployee(int id)
+        public async Task<IActionResult> GetEmployeeAsync(int id)
         {
-            try
-            {
-                var employee = _employeeService.GetEmployee(id);
-                if (employee == null)
-                    return NotFound();
-
-                var employeeDto = _mapper.Map<EmployeeDto>(employee);
-                return Ok(employeeDto);
-            }
-            catch
-            {
-                return StatusCode(500, "Произошла ошибка при получении сотрудника.");
-            }
+            var employee = _employeeService.GetEmployeeAsync(id);
+            return Ok(employee);
         }
 
-        // POST: api/employees
         [HttpPost]
-        public IActionResult CreateEmployee(EmployeeDto employeeDto)
+        public async Task<IActionResult> CreateEmployee(CreateEmployeeRequest request)
         {
-            try
-            {
-                var employee = _mapper.Map<Employee>(employeeDto);
-                employeeDto = _mapper.Map<EmployeeDto>(_employeeService.CreateEmployee(employee));
-                return Ok(employeeDto);
-            }
-            catch
-            {
-                return StatusCode(500, "Произошла ошибка при создании сотрудника.");
-            }
+            var employee = _mapper.Map<Employee>(request);
+            await _employeeService.CreateEmployee(employee);
+            return Ok(employee);
         }
 
-        // PUT: api/employees/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateEmployee(int id, EmployeeDto updatedEmployeeDto)
+        public async Task<IActionResult> UpdateEmployee(int id, UpdateEmployeeRequest request)
         {
-            try
+            var existingEmployee = await _employeeService.GetEmployeeAsync(id);
+            if (existingEmployee == null)
             {
-                var updatedEmployee = _mapper.Map<Employee>(updatedEmployeeDto);
-                var employee = _mapper.Map<EmployeeDto>(_employeeService.UpdateEmployee(id, updatedEmployee));
-                return Ok(employee);
+                return NotFound($"Сотрудник с {id} не найден.");
             }
-            catch
-            {
-                return StatusCode(500, "Произошла ошибка при изменении сотрудника.");
-            }
+
+            _mapper.Map(request, existingEmployee);
+
+            await _employeeService.UpdateEmployee(existingEmployee);
+
+            return Ok(existingEmployee);
         }
 
-        // DELETE: api/employees/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteEmployee(int id)
+        public async Task<IActionResult> DeleteEmployee(int id)
         {
-            try
+            // Проверяем, существует ли сотрудник с данным id
+            var existingEmployee = await _employeeService.GetEmployeeAsync(id);
+            if (existingEmployee == null)
             {
-                var employee = _employeeService.GetEmployee(id);
-                if (employee == null)
-                {
-                    return NotFound();
-                }
-                _employeeService.DeleteEmployee(employee);
-                return Ok();
+                return NotFound($"Сотрудник с {id} не найден.");
             }
-            catch
-            {
-                return StatusCode(500, "Произошла ошибка при удалении сотрудника.");
-            }
+
+            // Удаляем сотрудника через сервис
+            await _employeeService.DeleteEmployee(id);
+
+            return Ok($"Сотрудник с ID {id} был успешно удалён.");
         }
-        #endregion
     }
 }

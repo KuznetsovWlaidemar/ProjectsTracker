@@ -1,53 +1,40 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-using ProblemsTracker.Api.Services;
-using ProjectsTracker.Api;
-using ProjectsTracker.Services;
+﻿using ProjectsTracker.Application.Services;
 
-namespace ProjectsTracker
+var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
+
+// Add services to the container.
+
+services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+
+//Контекст БД!!!!!
+
+
+//AutoMapper
+services.AddAutoMapper(typeof(Program));
+
+//Сервисы
+services.AddScoped<IProjectService, ProjectService>();
+services.AddScoped<IEmployeeService, EmployeeService>();
+services.AddScoped<IProblemService, ProblemService>();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            //Контекст БД
-            builder.Services.AddDbContext<DbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectsTrackerDb")));
-
-            //AutoMapper
-            builder.Services.AddAutoMapper(typeof(Program));
-
-            //Сервисы
-            builder.Services.AddScoped<IProjectService, ProjectService>();
-            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-            builder.Services.AddScoped<IProblemService, ProblemService>();
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
-
-            app.Run();
-        }
-    }
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
