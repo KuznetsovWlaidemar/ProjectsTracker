@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectsTracker.Domain.Models;
 using ProjectsTracker.Domain.Repositories;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ProjectsTracker.Persistence
 {
@@ -15,6 +16,7 @@ namespace ProjectsTracker.Persistence
 
         public async Task Add(Employee employee)
         {
+
             _appDbContext.Employees.Add(employee);
             await _appDbContext.SaveChangesAsync();
         }
@@ -33,9 +35,10 @@ namespace ProjectsTracker.Persistence
             var result = await _appDbContext.Employees.ToListAsync();
             return result;
         }
-        public async Task<Employee?> GetByIdAsync(int employeeId)
+        public async Task<Employee> GetByIdAsync(int employeeId)
         {
             var result = await _appDbContext.Employees.FindAsync(employeeId);
+
             return result;
         }
         public async Task<IEnumerable<Employee>> GetByNameAsync(string employeeName)

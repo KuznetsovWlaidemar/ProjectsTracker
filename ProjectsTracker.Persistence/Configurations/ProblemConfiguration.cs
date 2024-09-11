@@ -9,15 +9,11 @@ namespace ProjectsTracker.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Problem> builder)
         {
-            // Конфигурация для Author (один к одному или многие к одному, если нужно)
             builder.HasOne(p => p.Author)
-                   .WithMany() // Если нет обратной навигации от Employee к Problem
-                   .HasForeignKey("AuthorId");
+                   .WithMany();
 
-            // Конфигурация для Assignee
             builder.HasOne(p => p.Assignee)
-                   .WithMany() // Если нет обратной навигации от Employee к Problem
-                   .HasForeignKey("AssigneeId");
+                   .WithMany();
         }
 
     }

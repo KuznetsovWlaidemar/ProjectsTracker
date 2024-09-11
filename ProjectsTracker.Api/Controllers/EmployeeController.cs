@@ -12,6 +12,7 @@ namespace ProjectsTracker.Api.Controllers
     {
         private readonly IEmployeeService _employeeService;
         private readonly IMapper _mapper;
+        private readonly ILo
 
         public EmployeeController(
             IEmployeeService employeeService,
@@ -38,7 +39,7 @@ namespace ProjectsTracker.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEmployee(CreateEmployeeRequest request)
         {
-            var employee = _mapper.Map<Employee>(request);
+            var employee = _mapper.Map<CreateEmployeeRequest>(request);
             await _employeeService.CreateEmployee(employee);
             return Ok(employee);
         }

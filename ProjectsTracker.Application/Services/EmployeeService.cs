@@ -55,7 +55,6 @@ namespace ProjectsTracker.Application.Services
         {
             await _employeeRepository.Add(employee);
             return employee;
-
         }
 
         /// <summary>
